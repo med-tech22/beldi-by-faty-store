@@ -1,0 +1,1 @@
+# beldi-by-faty-store
