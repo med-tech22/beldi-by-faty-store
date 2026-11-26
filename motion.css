@@ -1,0 +1,595 @@
+/* BELDI BY FATY — Motion identity layer
+   Lightweight CSS/JS motion, no animation framework required. */
+:root {
+  --motion-ease: cubic-bezier(.2, .75, .25, 1);
+  --motion-gold: rgba(181, 138, 67, .24);
+}
+
+/* Scroll progress */
+.motion-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 1000;
+  pointer-events: none;
+  background: linear-gradient(90deg, #d6b36e, #9f7134, #f1dcae);
+  transform: scaleX(0);
+  transform-origin: right center;
+  will-change: transform;
+  box-shadow: 0 1px 8px rgba(181, 138, 67, .35);
+}
+
+/* The reveal system is activated only after motion.js is ready. */
+.motion-ready .motion-reveal {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(.985);
+  transition:
+    opacity .8s var(--motion-ease),
+    transform .85s var(--motion-ease);
+  transition-delay: var(--motion-delay, 0ms);
+  will-change: opacity, transform;
+}
+.motion-ready .motion-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.motion-ready .motion-reveal.motion-from-left { transform: translate3d(-38px, 0, 0); }
+.motion-ready .motion-reveal.motion-from-left.is-visible { transform: translate3d(0, 0, 0); }
+.motion-ready .motion-reveal.motion-from-right { transform: translate3d(38px, 0, 0); }
+.motion-ready .motion-reveal.motion-from-right.is-visible { transform: translate3d(0, 0, 0); }
+
+/* Luxury hero atmosphere */
+.top {
+  background-image: linear-gradient(105deg, #211a14 0%, #332316 35%, #211a14 68%, #4a321b 100%);
+  background-size: 220% 100%;
+  animation: beldiTopGlow 14s ease-in-out infinite alternate;
+}
+.heroimg {
+  isolation: isolate;
+  transform: translateZ(0);
+}
+.heroimg::before {
+  z-index: 0;
+  transform: translate3d(var(--hero-x, 0px), var(--hero-y, 0px), 0) scale(1.035);
+  transition: transform .45s ease-out;
+  will-change: transform;
+}
+.heroimg::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -40% auto -40% -45%;
+  width: 28%;
+  pointer-events: none;
+  opacity: .48;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  animation: beldiHeroShine 8s ease-in-out 1.2s infinite;
+}
+.herotxt { z-index: 1; }
+.herotxt .eyebrow {
+  display: inline-block;
+  position: relative;
+  padding-bottom: 7px;
+}
+.herotxt .eyebrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--gold), #e8d2a4);
+  transform-origin: right;
+  animation: beldiLineGrow 1.1s .7s var(--motion-ease) both;
+}
+.hero h1 { animation: beldiTitleSettle .9s .2s var(--motion-ease) both; }
+.heroBtns .btn { transform: translateZ(0); }
+.heroBtns .btn:first-child { box-shadow: 0 8px 24px rgba(181,138,67,.2); }
+
+/* Navigation polish */
+.nav {
+  transition: box-shadow .35s ease, background-color .35s ease, border-color .35s ease;
+}
+.nav.is-scrolled {
+  background: rgba(255,253,249,.94);
+  box-shadow: 0 12px 32px rgba(35, 25, 15, .09);
+  border-color: rgba(181,138,67,.28);
+}
+.links a { position: relative; transition: color .25s ease; }
+.links a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -7px;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .3s var(--motion-ease);
+}
+.links a:hover { color: #9a702e; }
+.links a:hover::after { transform: scaleX(1); }
+.brand img { transition: transform .55s var(--motion-ease), filter .35s ease; }
+.brand:hover img { transform: rotate(-7deg) scale(1.06); filter: drop-shadow(0 5px 7px rgba(181,138,67,.2)); }
+
+/* Category tiles */
+.categorytile {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform .45s var(--motion-ease), box-shadow .45s ease, border-color .35s ease !important;
+}
+.categorytile::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 110%, rgba(181,138,67,.2), transparent 62%);
+  transition: opacity .45s ease;
+}
+.categorytile:hover { transform: translateY(-8px) scale(1.015) !important; }
+.categorytile:hover::before { opacity: 1; }
+.categorytile .caticon { display: inline-block; transition: transform .45s var(--motion-ease); }
+.categorytile:hover .caticon { transform: translateY(-5px) rotate(-8deg) scale(1.12); }
+
+/* Product cards — restrained 3D depth and moving highlight */
+.product {
+  position: relative;
+  isolation: isolate;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    transform .35s var(--motion-ease),
+    box-shadow .35s ease !important;
+}
+.product::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--shine-x, 50%) var(--shine-y, 35%),
+    rgba(255,255,255,.42),
+    rgba(255,255,255,.08) 24%,
+    transparent 54%
+  );
+  transition: opacity .3s ease;
+}
+.product.is-tilting {
+  transform: perspective(1050px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    translateY(-7px) !important;
+  box-shadow: 0 22px 42px rgba(53,35,19,.15) !important;
+}
+.product.is-tilting::after { opacity: 1; }
+.product .photo img { transform: translateZ(12px); }
+.product .tag { transition: transform .35s var(--motion-ease), background .3s ease; }
+.product:hover .tag { transform: translateY(-3px); background: #fff8e9; }
+.product .pactions .btn { transition: transform .25s var(--motion-ease), box-shadow .25s ease !important; }
+.product .pactions .btn:hover { transform: translateY(-3px) scale(1.025) !important; }
+
+/* Section details */
+.sectionhead h2 { position: relative; display: inline-block; }
+.sectionhead h2::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 42px;
+  margin: 7px auto 0;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #d6b36e, #9f7134);
+  transition: width .55s var(--motion-ease);
+}
+.sectionhead.is-visible h2::after { width: 84px; }
+.featurein > div { transition: transform .4s var(--motion-ease); }
+.featurein > div:hover { transform: translateY(-7px); }
+.featurein > div > div:first-child { display: inline-block; transition: transform .45s var(--motion-ease); }
+.featurein > div:hover > div:first-child { transform: translateY(-5px) rotate(-7deg) scale(1.12); }
+.about img { transition: transform .8s var(--motion-ease), filter .7s ease; }
+.about img:hover { transform: translateY(-6px) scale(1.025); filter: drop-shadow(0 15px 22px rgba(53,35,19,.12)); }
+.footer img { transition: transform .5s var(--motion-ease), box-shadow .5s ease; }
+.footer img:hover { transform: rotate(8deg) scale(1.08); box-shadow: 0 0 0 7px rgba(214,179,110,.12); }
+
+/* Ripple on action controls */
+.btn, .filter { position: relative; overflow: hidden; }
+.motion-ripple {
+  position: absolute;
+  z-index: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: rgba(255,255,255,.42);
+  transform: translate(-50%, -50%) scale(0);
+  animation: beldiRipple .65s ease-out forwards;
+}
+
+/* Magnetic controls and floating WhatsApp contact */
+.motion-magnetic { will-change: transform; transition: transform .22s ease-out, box-shadow .25s ease !important; }
+.floatwa { transition: transform .3s var(--motion-ease), box-shadow .3s ease; }
+.floatwa:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 14px 30px rgba(0,0,0,.22); }
+
+/* Cart / product detail entry */
+.modal.show .dialog { animation: beldiDialogIn .48s var(--motion-ease) both; }
+.detailmodal.show .detailwrap { animation: beldiDetailIn .55s var(--motion-ease) both; }
+.detailmodal.show .detailgallery { animation: beldiGalleryIn .7s .08s var(--motion-ease) both; }
+.detailmodal.show .detailinfo { animation: beldiInfoIn .65s .12s var(--motion-ease) both; }
+.detailclose { transition: transform .3s ease, background .3s ease, box-shadow .3s ease; }
+.detailclose:hover { transform: rotate(90deg); background: #fbf3e6; box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+
+/* Back-to-top control */
+.motion-top {
+  position: fixed;
+  z-index: 25;
+  right: 20px;
+  bottom: 22px;
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(181,138,67,.4);
+  border-radius: 50%;
+  background: rgba(255,253,249,.94);
+  color: #5f4727;
+  font-size: 21px;
+  line-height: 1;
+  box-shadow: 0 7px 22px rgba(35,25,15,.12);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(.9);
+  transition: opacity .3s ease, visibility .3s ease, transform .35s var(--motion-ease), background .25s ease;
+  backdrop-filter: blur(8px);
+}
+.motion-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.motion-top:hover { background: #f3e8d5; transform: translateY(-4px) scale(1.05); }
+
+@keyframes beldiTopGlow { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes beldiHeroShine {
+  0%, 30% { left: -45%; opacity: 0; }
+  45% { opacity: .5; }
+  72%, 100% { left: 125%; opacity: 0; }
+}
+@keyframes beldiLineGrow { from { transform: scaleX(0); opacity: .3; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes beldiTitleSettle { from { opacity: 0; transform: translateY(18px); letter-spacing: 1px; } to { opacity: 1; transform: translateY(0); letter-spacing: 0; } }
+@keyframes beldiRipple { to { transform: translate(-50%, -50%) scale(16); opacity: 0; } }
+@keyframes beldiDialogIn { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes beldiDetailIn { from { opacity: 0; transform: translateY(18px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes beldiGalleryIn { from { opacity: 0; transform: translateX(-22px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes beldiInfoIn { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: translateX(0); } }
+
+@media (max-width: 800px) {
+  .heroimg::after { animation-duration: 11s; opacity: .24; }
+  .product.is-tilting { transform: translateY(-4px) !important; }
+  .motion-top { right: 13px; bottom: 82px; width: 41px; height: 41px; }
+  .motion-ready .motion-reveal { transform: translate3d(0, 22px, 0) scale(.99); }
+}
+@media (hover: none), (pointer: coarse) {
+  .product.is-tilting { transform: translateY(-4px) !important; }
+  .motion-magnetic { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-progress { display: none; }
+  .motion-ready .motion-reveal,
+  .motion-ready .motion-reveal.is-visible { opacity: 1; transform: none; transition: none; }
+  .top, .heroimg::after, .herotxt .eyebrow::after { animation: none !important; }
+  .motion-top, .motion-ripple { transition: none !important; animation: none !important; }
+  .product, .categorytile, .brand img, .about img, .footer img { transition: none !important; }
+}
+
+/* Let the scroll observer, rather than the original entrance keyframes, control cards. */
+.motion-ready .product,
+.motion-ready .categorytile,
+.motion-ready .collection-block { animation: none !important; }
+.btn.motion-magnetic:hover {
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) translateY(-2px) !important;
+}
+
+/* BELDI BY FATY — MODERN EDITORIAL PRODUCT DISPLAY
+   Clean fashion-catalog layout replaces the dated boxed-card treatment. */
+#products.grid,
+.collection-block .grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(14px, 2vw, 26px) !important;
+  align-items: start;
+}
+.product {
+  display: flex; flex-direction: column; min-width: 0; overflow: visible !important;
+  border: 0 !important; border-radius: 0 !important; background: transparent !important;
+  box-shadow: none !important; transform-style: flat !important;
+  animation: beldiFadeUp .6s ease both;
+}
+.product::after { display: none !important; }
+.product:hover { transform: translateY(-4px) !important; box-shadow: none !important; }
+.product .photo {
+  width: 100%; height: auto !important; aspect-ratio: 4 / 5; position: relative;
+  display: block; overflow: hidden; isolation: isolate; border: 0 !important;
+  border-radius: 3px !important; background: #f1ede6; cursor: pointer;
+}
+.product .photo::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(24,19,14,.12), transparent 24%, transparent 72%, rgba(24,19,14,.04));
+  opacity: .6; transition: opacity .35s ease;
+}
+.product .photo img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.001) !important;
+  transition: transform .8s cubic-bezier(.2,.7,.2,1), filter .5s ease !important;
+}
+.product:hover .photo img { transform: scale(1.055) !important; filter: saturate(1.04); }
+.product .tag {
+  z-index: 2; top: 12px; right: 12px; padding: 6px 11px;
+  border: 1px solid rgba(255,255,255,.48); border-radius: 2px !important;
+  background: rgba(255,253,248,.88); color: #55432b; box-shadow: none;
+  font-size: 10px; letter-spacing: .3px; backdrop-filter: blur(12px);
+}
+.product .pbody { padding: 13px 1px 0 !important; background: transparent !important; text-align: right; }
+.product .pbody h3 { margin: 0 0 5px; color: #28231e; font-family: 'Cairo',sans-serif; font-size: 14px; font-weight: 700; line-height: 1.7; }
+.product .desc { min-height: 0; margin: 0; color: #8b8175; font-size: 11px; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product .price { display: flex; align-items: baseline; gap: 7px; margin: 9px 0 11px; color: #8b682f; font-size: 17px; font-weight: 800; }
+.product .price small { color: #a69b8d; font-size: 9px; font-weight: 400; }
+.product .pactions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.product .pactions .btn { min-height: 38px; padding: 8px 7px !important; border-radius: 2px !important; font-size: 10px !important; box-shadow: none !important; letter-spacing: .1px; }
+.product .pactions .btn.dark { background: #211a14 !important; border: 1px solid #211a14 !important; }
+.product .pactions .btn.outline { background: transparent !important; border: 1px solid #d7c6a8 !important; color: #6e5228 !important; }
+.product .pactions .btn:hover { transform: translateY(-2px) !important; }
+@media (max-width: 900px) {
+  #products.grid, .collection-block .grid { grid-template-columns: repeat(3,minmax(0,1fr)) !important; gap: 16px !important; }
+}
+@media (max-width: 620px) {
+  #products.grid, .collection-block .grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 17px 11px !important; }
+  .product .photo { aspect-ratio: 3 / 4.15; }
+  .product .tag { top: 8px; right: 8px; padding: 5px 8px; font-size: 9px; }
+  .product .pbody { padding-top: 9px !important; }
+  .product .pbody h3 { font-size: 12px; }
+  .product .desc { font-size: 10px; }
+  .product .price { font-size: 15px; margin: 7px 0 9px; }
+  .product .price small { font-size: 8px; }
+  .product .pactions { grid-template-columns: 1fr; gap: 6px; }
+  .product .pactions .btn { min-height: 35px; font-size: 10px !important; }
+}
+@media (prefers-reduced-motion: reduce) { .product, .product .photo img { animation: none !important; transition: none !important; } }
+
+/* ==========================================================
+   BELDI BY FATY — ATELIER / EDITORIAL COMMERCE EXPERIENCE
+   A distinctive Moroccan luxury direction, not a template clone.
+   ========================================================== */
+:root{
+ --atelier-ink:#171512;--atelier-paper:#f7f5f0;--atelier-stone:#e9e4da;
+ --atelier-gold:#a7834e;--atelier-muted:#777168;--atelier-ease:cubic-bezier(.2,.75,.25,1)
+}
+html{scroll-padding-top:92px}
+body{background:#fbfaf7;color:var(--atelier-ink);letter-spacing:.005em}
+.top{background:#171512;color:#eee7da;padding:9px 12px;font-size:10px;letter-spacing:1.1px}
+.nav{background:rgba(251,250,247,.94);border-bottom:1px solid #e9e5dd;box-shadow:0 3px 22px rgba(22,18,13,.025)}
+.navin{max-width:1440px;padding:11px clamp(16px,4vw,58px)}
+.brand{gap:13px}.brand img{width:49px;height:49px;border-radius:0;filter:none}
+.brand b{font-family:'Amiri',serif;font-size:25px;letter-spacing:1.4px}
+.brand small{font-size:9px;letter-spacing:2.4px;color:#8b6b3d;margin-top:-5px}
+.links{gap:clamp(15px,2.5vw,38px)}
+.links a{font-size:11px;letter-spacing:.7px;position:relative;padding:10px 0}
+.links a:after{content:"";position:absolute;bottom:3px;right:0;width:0;height:1px;background:#9b7744;transition:width .35s var(--atelier-ease)}
+.links a:hover:after{width:100%}
+.navactions .btn{font-size:11px;padding:10px 17px;border-radius:1px;letter-spacing:.5px}
+.hero{max-width:1440px;margin:0 auto 64px;padding:0}
+.heroimg{min-height:clamp(410px,49vw,660px);border-radius:0;box-shadow:none;background:#e9e3d8;padding:0 7%;justify-content:flex-start}
+.heroimg:before{width:100%;inset:0;background-image:linear-gradient(90deg,rgba(18,15,12,.02),rgba(18,15,12,.02)),url('assets/banner.webp');background-position:center;background-size:cover;opacity:1}
+.heroimg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,17,13,.34),rgba(20,17,13,.04) 70%);pointer-events:none}
+.herotxt{width:min(540px,52%);max-width:540px;margin:0 auto 0 0;padding:clamp(22px,4vw,52px);background:rgba(250,248,243,.91);border:0;border-radius:0;box-shadow:none;backdrop-filter:blur(8px);text-align:right}
+.hero .eyebrow{font-size:10px;letter-spacing:2.8px;color:#8a6a3d}
+.hero h1{font-size:clamp(42px,6vw,76px);line-height:1.08;margin:16px 0 18px}
+.hero p{font-size:13px;line-height:2.2;color:#625b51;max-width:410px}
+.heroBtns .btn{border-radius:0;padding:14px 23px;font-size:11px;letter-spacing:.4px}
+.trust{gap:22px;font-size:10px;color:#635b50}
+.section{max-width:1440px;padding:22px clamp(16px,4vw,58px) 72px}
+.sectionhead{margin-bottom:32px}
+.sectionhead small{font-size:9px;letter-spacing:3px;color:#9b7744}
+.sectionhead h2{font-size:clamp(32px,4vw,47px);font-weight:400;letter-spacing:.2px}
+.sectionhead p{font-size:12px;color:#817b72}
+.filters{gap:24px;margin:26px 0 34px}
+.filter{border:0;border-bottom:1px solid transparent;border-radius:0;background:transparent;padding:9px 2px;color:#777168;font-size:11px}
+.filter.active{background:transparent;color:#171512;border-color:#a7834e}
+.filter:hover{background:transparent;color:#171512}
+#products.grid,.collection-block .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:clamp(12px,1.65vw,25px)!important}
+.product{position:relative;display:flex;flex-direction:column;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;transition:transform .5s var(--atelier-ease)!important}
+.product:hover{transform:translateY(-3px)!important;box-shadow:none!important}
+.product .photo{height:auto!important;aspect-ratio:4/5.15;border-radius:0!important;background:#eeeae2;overflow:hidden;position:relative;cursor:pointer}
+.product .photo:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.10),transparent 18%,transparent 75%,rgba(0,0,0,.025));opacity:.7}
+.product .photo img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--atelier-ease),filter .6s ease!important;transform:scale(1.001)!important}
+.product:hover .photo img{transform:scale(1.045)!important;filter:contrast(1.015)}
+.product .tag{top:12px;right:12px;z-index:2;border:0;border-radius:0!important;padding:7px 10px;background:rgba(250,248,243,.92);color:#5b4932;font-size:9px;letter-spacing:.6px;backdrop-filter:blur(10px)}
+.product .pbody{padding:13px 0 0!important;text-align:right;background:transparent!important}
+.product .pbody h3{font-size:13px;font-weight:600;line-height:1.8;margin:0;color:#24211d;cursor:pointer}
+.product .desc{font-size:10px;color:#8b857c;line-height:1.8;min-height:0;margin:1px 0 0}
+.product .price{font-size:15px;color:#29251f;margin:7px 0 10px;font-weight:700;gap:8px}
+.product .price small{font-size:9px;color:#969087;font-weight:400}
+.product .pactions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.product .pactions .btn{border-radius:0!important;min-height:37px;padding:8px 5px!important;font-size:9px!important;letter-spacing:.3px;box-shadow:none!important}
+.product .pactions .btn.dark{background:#1b1916!important;border:1px solid #1b1916!important;color:#fff}
+.product .pactions .btn.outline{border:1px solid #c8b99f!important;color:#54432d!important;background:transparent!important}
+.product .pactions .btn:hover{transform:translateY(-2px)!important}
+.collection-block{margin-top:48px;padding-top:24px;border-top:1px solid #e9e5dd}
+.collection-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 22px}
+.collection-title h3{font-family:'Amiri',serif;font-size:28px;font-weight:400;margin:0}
+.collection-title span{font-size:10px;color:#888176;letter-spacing:.4px}
+.collection-title .btn{border-radius:0;font-size:10px;padding:8px 13px}
+.category-showcase{padding-top:42px}
+.categorytiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.categorytile{position:relative;min-height:125px;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;padding:19px!important;border:1px solid #e6e0d5!important;border-radius:0!important;background:linear-gradient(135deg,#f3f0e9,#e9e3d8)!important;text-decoration:none;overflow:hidden;transition:transform .45s var(--atelier-ease),border-color .35s!important}
+.categorytile:after{content:"↙";position:absolute;top:15px;left:17px;color:#9a7746;font-size:19px;transition:transform .3s}
+.categorytile:hover{transform:translateY(-4px);border-color:#bca47e!important}
+.categorytile:hover:after{transform:translate(-4px,4px)}
+.categorytile .caticon{font-size:20px;opacity:.8}.categorytile b{font-family:'Amiri',serif;font-size:21px;font-weight:400;color:#29231b}.categorytile small{font-size:9px;color:#81796e}
+.features{background:#1b1916;padding:42px 20px}
+.featurein{max-width:1260px;grid-template-columns:repeat(3,1fr);gap:35px}
+.featurein b{font-size:13px;font-weight:600;letter-spacing:.4px}.featurein p{font-size:10px;color:#bcb3a6}
+.about{gap:clamp(25px,6vw,90px);padding-top:80px;padding-bottom:90px}
+.about img{max-height:430px;border-radius:0;object-fit:contain}
+.about h2{font-size:clamp(34px,4vw,48px);font-weight:400}
+.about p{font-size:12px;line-height:2.3;color:#70695f}
+.about .btn{border-radius:0;font-size:10px;letter-spacing:.4px}
+.footer{padding:48px 20px;background:#171512}
+.footer img{width:60px;border-radius:0}
+.floatwa{border-radius:0;padding:13px 17px;font-size:11px;letter-spacing:.3px}
+
+/* Product reveal: elegant and quiet, no distracting card chrome */
+.motion-ready .product.motion-reveal{opacity:0;transform:translateY(22px)}
+.motion-ready .product.motion-reveal.is-visible{opacity:1;transform:translateY(0)}
+.product .photo img{will-change:transform}
+.product .pbody h3:hover{color:#9b7744}
+
+@media(max-width:1000px){
+ .hero{padding:0}.heroimg{min-height:440px}.herotxt{width:55%}
+ #products.grid,.collection-block .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .categorytiles{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:800px){
+ .navin{padding:8px 14px}.brand img{width:42px;height:42px}.brand b{font-size:21px}
+ .navactions .outline{display:none}
+ .hero{margin:0 auto 34px}.heroimg{min-height:410px;padding:16px;background:#e9e3d8}
+ .heroimg:before{background-position:42% center;background-size:cover}
+ .heroimg:after{background:linear-gradient(0deg,rgba(20,17,13,.10),transparent 70%)}
+ .herotxt{width:min(75%,420px);margin:0 auto 0 0;padding:22px;background:rgba(250,248,243,.93)}
+ .hero h1{font-size:clamp(36px,8vw,54px)}
+ .section{padding:20px 16px 52px}
+ .sectionhead h2{font-size:34px}
+ #products.grid,.collection-block .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px 12px!important}
+ .product .photo{aspect-ratio:3/4.15}
+ .product .pbody{padding-top:9px!important}
+ .product .pbody h3{font-size:12px}
+ .product .desc{font-size:9px}
+ .product .price{font-size:14px;margin:6px 0 9px}
+ .product .pactions{grid-template-columns:1fr;gap:5px}
+ .product .pactions .btn{min-height:34px;font-size:9px!important}
+ .collection-title h3{font-size:24px}
+ .features{padding:34px 18px}.featurein{gap:24px}
+ .about{padding-top:50px;padding-bottom:60px}
+}
+@media(max-width:420px){
+ .top{font-size:9px;letter-spacing:.5px}
+ .heroimg{min-height:370px}.herotxt{width:78%;padding:17px}
+ .hero h1{font-size:34px}.hero p{font-size:11px}
+ .heroBtns .btn{padding:11px 13px;font-size:10px}
+ .trust{gap:9px;font-size:9px}
+ .product .tag{top:8px;right:8px;padding:5px 7px;font-size:8px}
+ .product .pactions .btn{min-height:33px}
+ .categorytiles{gap:8px}.categorytile{min-height:110px;padding:13px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .product,.product .photo img,.categorytile,.links a:after{transition:none!important;animation:none!important}
+ .motion-ready .product.motion-reveal,.motion-ready .product.motion-reveal.is-visible{opacity:1;transform:none}
+}
+
+
+/* Performance: isolate off-screen product cards to reduce layout/paint work. */
+.product {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 480px;
+}
+.product .photo img {
+  aspect-ratio: 4 / 5;
+  background: #f1ede6;
+}
+@media (max-width: 620px) {
+  .product { contain-intrinsic-size: 1px 410px; }
+}
+
+
+/* BELDI BY FATY — MOBILE CATALOG + PRODUCT MOTION FIX V2 */
+#products.grid,
+.collection-block .grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(12px, 2vw, 26px) !important;
+  align-items: start;
+}
+/* A single product in a category should not sit awkwardly in the far-right half. */
+#products.grid:has(> .product:only-child),
+.collection-block .grid:has(> .product:only-child) {
+  grid-template-columns: minmax(0, 390px) !important;
+  justify-content: center !important;
+}
+.product {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.product .photo {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 4 / 5 !important;
+  overflow: hidden !important;
+  border-radius: 2px !important;
+  background: #eee8df !important;
+}
+.product .photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform .9s cubic-bezier(.2,.7,.2,1), filter .7s ease !important;
+}
+.product:hover .photo img { transform: scale(1.07) !important; }
+.product .pbody {
+  padding: 13px 0 0 !important;
+  background: transparent !important;
+  text-align: right !important;
+}
+.product .pbody h3 { font-size: 15px !important; line-height: 1.7 !important; margin: 0 0 4px !important; }
+.product .desc {
+  min-height: 0 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  line-height: 1.8 !important;
+}
+.product .price { margin: 8px 0 10px !important; }
+.product .pactions { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+.product .pactions .btn { border-radius: 3px !important; min-height: 40px !important; }
+/* Clear reveal motion on product content without hiding content if JS is unavailable. */
+.motion-ready .product.motion-reveal { opacity: 0; transform: translate3d(0,28px,0) scale(.985); }
+.motion-ready .product.motion-reveal.is-visible { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+.motion-ready .product .photo img { animation: beldiProductImageIn .85s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes beldiProductImageIn { from { opacity:.55; transform:scale(1.045); } to { opacity:1; transform:scale(1); } }
+@media (max-width: 900px) {
+  #products.grid, .collection-block .grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+}
+@media (max-width: 620px) {
+  #products.grid, .collection-block .grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 15px 12px !important; }
+  #products.grid:has(> .product:only-child),
+  .collection-block .grid:has(> .product:only-child) { grid-template-columns: minmax(0, 300px) !important; }
+  .product .photo { aspect-ratio: 4 / 5 !important; }
+  .product .pbody { padding-top: 10px !important; }
+  .product .pbody h3 { font-size: 13px !important; }
+  .product .desc { font-size: 10px !important; }
+  .product .pactions { grid-template-columns: 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-ready .product.motion-reveal,
+  .motion-ready .product.motion-reveal.is-visible { opacity:1 !important; transform:none !important; }
+  .motion-ready .product .photo img { animation:none !important; }
+}
+
+
+/* BELDI loyalty rewards card */
+.loyalty-card{position:relative;overflow:hidden;margin:14px 0 18px;padding:18px 20px;border:1px solid rgba(166,125,57,.3);border-radius:20px;background:linear-gradient(125deg,#f8efdc 0%,#fffaf0 52%,#efe0c3 100%);color:#5d4526;box-shadow:0 8px 24px rgba(94,68,32,.07)}
+.loyalty-card:after{content:'✦';position:absolute;left:18px;bottom:-24px;font-size:92px;line-height:1;color:rgba(166,125,57,.09);pointer-events:none}
+.loyalty-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;letter-spacing:.04em}
+.loyalty-pill{padding:5px 9px;border:1px solid rgba(166,125,57,.3);border-radius:99px;font-size:9px;letter-spacing:.12em}
+.loyalty-points-line{display:flex;align-items:baseline;gap:9px;margin:9px 0 3px}
+.loyalty-points-line strong{font-size:38px;line-height:1.1;font-weight:800;color:#9b7134;font-variant-numeric:tabular-nums}
+.loyalty-points-line span{font-size:15px;font-weight:700}
+.loyalty-card p{position:relative;z-index:1;margin:7px 0 0;font-size:12px;line-height:1.8;color:#806b4b}
